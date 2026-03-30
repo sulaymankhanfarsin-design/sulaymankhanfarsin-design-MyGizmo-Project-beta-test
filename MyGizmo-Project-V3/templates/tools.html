@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Tools - My Gizmo{% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-6 py-16">
+    <section class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+            <span class="text-gradient">MyGizmo Toolkit</span>
+        </h1>
+        
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            {% if current_user.is_authenticated %}
+                Welcome, {{ current_user.username }}! Here are your available tools.
+            {% else %}
+                All the essential tools for modern business. All in one premium, ad-free workspace.
+            {% endif %}
+        </p>
+    </section>
+
+    <section>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <a href="{{ url_for('ai_background_remover') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-teal-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-teal-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c.251-.04.507-.068.77-.087a21.048 21.048 0 0110.732 4.63c.31.299.5.742.5 1.218v4.318a2.25 2.25 0 01-1.659 2.193l-2.156.622a2.25 2.25 0 00-1.09 1.09l-.622 2.156a2.25 2.25 0 01-2.193 1.659H6.379a2.25 2.25 0 01-2.193-1.659l-.622-2.156a2.25 2.25 0 00-1.09-1.09l-2.156-.622a2.25 2.25 0 01-1.659-2.193V9.051c0-.476.19-.919.5-1.218a21.048 21.048 0 0110.732-4.63c.263-.019.519-.047.77-.087z" />
+                        </svg>
+                    </div>
+                    <span class="bg-purple-100 text-purple-700 text-xs font-medium px-3 py-1.5 rounded-full">AI Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">AI Background Remover</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Instantly remove the background from any image using advanced AI.
+                </p>
+            </a>
+            
+            <a href="{{ url_for('image_studio') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-blue-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-blue-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L1.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.25 12L15 14.25l-3.25-2.25L15 9.75l3.25 2.25zM12 15.75l2.25 3.25L16.5 15.75-2.25-3.25L12 15.75z" />
+                        </svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Batch Editor</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">Image Studio</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Batch resize, watermark, and beautify dozens of images efficiently.
+                </p>
+            </a>
+            
+            <a href="{{ url_for('file_converter') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-red-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-red-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">PDF Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">File Converter</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Combine JPGs into a PDF, or extract images from a PDF document.
+                </p>
+            </a>
+            
+            <a href="{{ url_for('qr_generator') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-indigo-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-indigo-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 013.75 9.375v-4.5zM3.75 14.625c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 013.75 19.125v-4.5zM13.5 4.875c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0113.5 9.375v-4.5zM13.5 14.625c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0113.5 19.125v-4.5z" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Utility</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">QR Code Generator</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Generate custom QR codes for URLs, text, Wi-Fi, and various other data.
+                </p>
+            </a>
+
+            <a href="{{ url_for('slug_generator') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-amber-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-amber-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-amber-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Text Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">URL Slug Generator</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                Create clean, SEO-friendly URL slugs from any text string effortlessly.
+                </p>
+            </a>
+
+            <a href="{{ url_for('list_randomizer') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-emerald-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-emerald-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Utility</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">List Randomizer</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Instantly shuffle a list of names, numbers, or any items for fair selection.
+                </p>
+            </a>
+
+            <a href="{{ url_for('word_counter') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-pink-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-pink-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Text Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">Word Counter</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Quickly count words, characters, and paragraphs in your text.
+                </p>
+            </a>
+
+            <a href="{{ url_for('case_converter') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-purple-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-purple-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Text Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">Case Converter</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Convert text to UPPERCASE, lowercase, Title Case, and more.
+                </p>
+            </a>
+
+            <a href="{{ url_for('lorem_ipsum_generator') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-sky-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-sky-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-sky-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5v4.5m0-4.5l6.375 6.375-6.375 6.375m0-6.375H13.5m0 6.375v-4.5h4.5m0 4.5l-6.375-6.375 6.375-6.375m0 6.375H10.125" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Dev Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">Lorem Ipsum Generator</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Generate placeholder dummy text for your designs and mockups.
+                </p>
+            </a>
+
+            <a href="{{ url_for('base64_tool') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-gray-500 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-gray-100 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 9.75L16.5 12l-2.25 2.25m-4.5 0L7.5 12l2.25-2.25M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Dev Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">Base64 Encoder/Decoder</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Quickly encode text to Base64 or decode Base64 strings.
+                </p>
+            </a>
+
+            <a href="{{ url_for('url_tool') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-amber-500 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-amber-100 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-amber-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Dev Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">URL Encoder/Decoder</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    Encode text to be URL-safe or decode URL-encoded strings.
+                </p>
+            </a>
+            <a href="{{ url_for('calculator') }}" class="group block bg-white p-8 rounded-2xl border border-gray-100 shadow-lg hover:shadow-xl hover:border-cyan-400 transition-all duration-300 ease-in-out transform hover:-translate-y-2">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="p-4 bg-cyan-50 rounded-xl shadow-inner">
+                        <svg class="h-7 w-7 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                    <span class="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1.5 rounded-full">Basic Tool</span>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-2">Calculator</h3>
+                <p class="text-gray-600 text-sm leading-relaxed">
+                    A simple and easy-to-use calculator for all your basic arithmetic needs.
+                </p>
+            </a>
+
+        </div>
+    </section>
+</main>
+{% endblock %}

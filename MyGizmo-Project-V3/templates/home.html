@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}My Gizmo - Premium AI & Utility Tools for Modern Businesses{% endblock %}
+
+{% block head %}
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-32"> <section class="text-center py-24 md:py-36">
+        <div class="container mx-auto px-6">
+            
+            <div class="mb-6 flex justify-center">
+                <a href="{{ url_for('ai_background_remover') }}" class="inline-flex items-center gap-x-2 bg-white border border-gray-200 text-gray-600 px-4 py-1.5 rounded-full text-sm hover:border-teal-500 transition-all shadow-sm">
+                    <span> New AI Background Remover added</span>
+                    <svg class="w-4 h-4 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                </a>
+            </div>
+
+            <h1 class="text-5xl md:text-7xl font-extrabold text-gray-900 mb-6 leading-tight">
+                Build Faster.
+                <br>
+                <span class="text-gradient">
+                    Work Smarter.
+                </span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
+                Stop juggling dozens of single-task websites. Get your essential AI, file, and text tools in one premium, ad-free workspace designed for modern business.
+            </p>
+            
+            <div class="flex justify-center items-center gap-x-4">
+                <a href="{{ url_for('register') }}" class="btn-primary px-7 py-3 rounded-lg text-lg font-semibold text-white shadow-lg">
+                    Start for Free
+                </a>
+                <a href="#pricing" class="btn-secondary px-7 py-3 rounded-lg text-lg font-semibold shadow-sm">
+                    See Pricing
+                </a>
+            </div>
+            <p class="text-gray-500 text-sm mt-4">No credit card required.</p>
+        </div>
+    </section>
+    <section class="container mx-auto px-6 text-center">
+        <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-8">
+            Trusted by professionals at
+        </p>
+        <div class="flex flex-wrap justify-center items-center gap-x-12 gap-y-6 opacity-70">
+            <span class="font-semibold text-xl text-gray-600">LogoInc</span>
+            <span class="font-semibold text-xl text-gray-600">QuantumLeap</span>
+            <span class="font-semibold text-xl text-gray-600">Apex Solutions</span>
+            <span class="font-semibold text-xl text-gray-600">Stellar Co.</span>
+            <span class="font-semibold text-xl text-gray-600">Innovate Hub</span>
+        </div>
+    </section>
+
+    <section>
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900">A Full Toolkit at Your Fingertips</h2>
+            <p class="text-lg text-gray-600 mt-3 max-w-2xl mx-auto">All the tools you'll ever need. All in one place.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="p-4 bg-teal-50 rounded-xl w-max mb-5 shadow-inner">
+                    <svg class="h-7 w-7 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L1.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.25 12L15 14.25l-3.25-2.25L15 9.75l3.25 2.25zM12 15.75l2.25 3.25L16.5 15.75-2.25-3.25L12 15.75z" /></svg>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-3">Batch Image Studio</h3>
+                <p class="text-gray-600 leading-relaxed">Resize, watermark, and convert dozens of images at once. Your new social media partner.</p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="p-4 bg-indigo-50 rounded-xl w-max mb-5 shadow-inner">
+                    <svg class="h-7 w-7 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-3">All-in-One File Converter</h3>
+                <p class="text-gray-600 leading-relaxed">Instantly convert JPGs to PDF or extract images from a PDF. Fast, simple, and secure.</p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="p-4 bg-emerald-50 rounded-xl w-max mb-5 shadow-inner">
+                    <svg class="h-7 w-7 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-900 mb-3">Text & List Tools</h3>
+                <p class="text-gray-600 leading-relaxed">Generate URL slugs or randomize lists in seconds. Perfect for developers and marketers.</p>
+            </div>
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{{ url_for('tools') }}" class="font-medium text-teal-600 hover:underline text-lg">
+                See all available tools &rarr;
+            </a>
+        </div>
+    </section>
+
+    <section id="pricing" class="bg-white rounded-2xl shadow-2xl border border-gray-100 py-20">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-gray-900 mb-16">Choose Your Plan</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+                
+                <div class="border border-gray-200 p-8 rounded-2xl shadow-lg flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Free</h3>
+                        <p class="text-6xl font-extrabold text-gray-900 mb-4">$0<span class="text-xl font-normal text-gray-500">/mo</span></p>
+                        <ul class="space-y-4 text-gray-600 mb-10 text-left">
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                Access to 3 basic tools
+                            </li>
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                5 conversions per day
+                            </li>
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                Community support
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('register') }}" class="btn-secondary w-full block py-3.5 rounded-lg font-semibold shadow-sm">
+                        Get Started
+                    </a>
+                </div>
+
+                <div class="relative ring-3 ring-teal-500 p-8 rounded-2xl shadow-2xl shadow-teal-500/20 flex flex-col justify-between transform scale-[1.03] z-10">
+                    <span class="bg-gradient-to-r from-teal-500 to-blue-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase absolute -top-4 left-1/2 -translate-x-1/2 shadow-lg">Most Popular</span>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-teal-600 mb-4">Pro</h3>
+                        <p class="text-6xl font-extrabold text-gray-900 mb-4">$9<span class="text-xl font-normal text-gray-500">/mo</span></p>
+                        <ul class="space-y-4 text-gray-600 mb-10 text-left">
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                Access to ALL tools (incl. AI)
+                            </li>
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                Unlimited conversions
+                            </li>
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                Priority email support
+                            </li>
+                        </ul>
+                    </div>
+                    <button id="checkout-button" 
+                            data-authenticated="{{ current_user.is_authenticated | tojson }}"
+                            class="btn-primary w-full block py-3.5 rounded-lg font-semibold text-white shadow-lg">
+                        Start 7-day Trial
+                    </button>
+                </div>
+
+                <div class="border border-gray-200 p-8 rounded-2xl shadow-lg flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:scale-[1.01]">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-4">Enterprise</h3>
+                        <p class="text-6xl font-extrabold text-gray-900 mb-4">$49<span class="text-xl font-normal text-gray-500">/mo</span></p>
+                        <ul class="space-y-4 text-gray-600 mb-10 text-left">
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                All Pro features
+                            </li>
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                Team accounts (5 seats)
+                            </li>
+                            <li class="flex items-center gap-x-3">
+                                <svg class="w-6 h-6 text-teal-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                                Dedicated support & API
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="{{ url_for('contact') }}" class="btn-secondary w-full block py-3.5 rounded-lg font-semibold shadow-sm">
+                        Contact Sales
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const stripe = Stripe("{{ stripe_key | safe }}"); 
+        const checkoutButton = document.getElementById("checkout-button");
+        
+        if (checkoutButton) {
+            const isUserAuthenticated = JSON.parse(checkoutButton.dataset.authenticated);
+            checkoutButton.addEventListener("click", async () => {
+                checkoutButton.disabled = true;
+                checkoutButton.textContent = "Processing...";
+                if (!isUserAuthenticated) {
+                    window.location.href = "{{ url_for('register') }}";
+                    return;
+                }
+                try {
+                    const response = await fetch("{{ url_for('create_checkout_session') }}", {
+                        method: "POST",
+                        headers: {'Content-Type': 'application/json'}
+                    });
+                    const session = await response.json();
+                    if (session.id) {
+                        const result = await stripe.redirectToCheckout({ sessionId: session.id });
+                        if (result.error) {
+                            alert(result.error.message);
+                            checkoutButton.disabled = false;
+                            checkoutButton.textContent = "Start 7-day Trial";
+                        }
+                    } else if (session.error) {
+                        alert(session.error);
+                        checkoutButton.disabled = false;
+                        checkoutButton.textContent = "Start 7-day Trial";
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Could not connect to payment processor. Please try again later.");
+                    checkoutButton.disabled = false;
+                    checkoutButton.textContent = "Start 7-day Trial";
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

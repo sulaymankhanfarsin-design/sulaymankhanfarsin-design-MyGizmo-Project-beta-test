@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Batch Image Studio - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto"> <div class="bg-indigo-100 p-6 rounded-t-lg text-center">
+        <h1 class="text-3xl font-bold text-[#2a4a87]">My Gizmo — Batch Image Studio</h1>
+        <p class="text-gray-600">Resize • Rotate • Filter • Watermark • Export</p>
+    </div>
+
+    <form action="{{ url_for('process_images') }}" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-b-lg shadow-lg">
+        
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b pb-4">Upload & Customize</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+                <label for="fileInput" class="inline-block cursor-pointer bg-[#f26c24] text-white font-semibold py-2 px-5 rounded-lg shadow hover:bg-opacity-90 transition-colors">
+                    Choose Files
+                </label>
+                <input id="fileInput" type="file" name="images" accept="image/*" multiple required class="hidden">
+                <span id="file-name" class="ml-3 text-gray-500 italic">No files chosen</span>
+            </div>
+            <div>
+                <label for="watermarkInput" class="inline-block cursor-pointer bg-[#f26c24] text-white font-semibold py-2 px-5 rounded-lg shadow hover:bg-opacity-90 transition-colors">
+                    Choose Watermark Image
+                </label>
+                <input id="watermarkInput" type="file" name="watermark_image" accept="image/*" class="hidden">
+                <span id="watermark-name" class="ml-3 text-gray-500 italic">No file chosen</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+            
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700">Resize</h3>
+                <div>
+                    <label for="width" class="block text-sm font-medium text-gray-600">Width (px):</label>
+                    <input type="number" name="width" id="width" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                </div>
+                <div>
+                    <label for="height" class="block text-sm font-medium text-gray-600">Height (px):</label>
+                    <input type="number" name="height" id="height" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" name="keep_aspect" id="keep_aspect" checked class="h-4 w-4 text-[#35a9e0] border-gray-300 rounded focus:ring-[#35a9e0]">
+                    <label for="keep_aspect" class="ml-2 block text-sm text-gray-700">Keep aspect ratio</label>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700">Adjustments</h3>
+                <div>
+                    <label for="rotate" class="block text-sm font-medium text-gray-600">Rotate:</label>
+                    <select name="rotate" id="rotate" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                        <option value="">None</option>
+                        <option value="90">90° Clockwise</option>
+                        <option value="180">180°</option>
+                        <option value="270">270° Clockwise</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="flip" class="block text-sm font-medium text-gray-600">Flip:</label>
+                    <select name="flip" id="flip" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                        <option value="">None</option>
+                        <option value="horizontal">Horizontal</option>
+                        <option value="vertical">Vertical</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="img_filter" class="block text-sm font-medium text-gray-600">Filter:</label>
+                    <select name="img_filter" id="img_filter" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                        <option value="">None</option>
+                        <option value="grayscale">Grayscale</option>
+                        <option value="sepia">Sepia</option>
+                        <option value="blur">Blur</option>
+                        <option value="sharpen">Sharpen</option>
+                    </select>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700">Watermark (Text)</h3>
+                <div>
+                    <input type="text" name="watermark_text" placeholder="© MyGizmo" class="block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                </div>
+                <div>
+                    <label for="wm_position" class="block text-sm font-medium text-gray-600">Position:</label>
+                    <select name="wm_position" id="wm_position" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                        <option>bottom-right</option>
+                        <option>top-left</option>
+                        <option>center</option>
+                        <option>top-right</option>
+                        <option>bottom-left</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="text_opacity" class="block text-sm font-medium text-gray-600">Opacity (0.1 - 1.0):</label>
+                    <input type="number" step="0.1" name="text_opacity" value="0.5" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                </div>
+                <div>
+                    <label for="text_size" class="block text-sm font-medium text-gray-600">Text Size:</label>
+                    <input type="number" name="text_size" value="24" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700">Watermark (Image)</h3>
+                <div>
+                    <label for="image_scale" class="block text-sm font-medium text-gray-600">Scale (e.g., 0.2):</label>
+                    <input type="number" step="0.1" name="image_scale" value="0.2" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                </div>
+                <div>
+                    <label for="img_opacity" class="block text-sm font-medium text-gray-600">Opacity (0.1 - 1.0):</label>
+                    <input type="number" step="0.1" name="img_opacity" value="0.5" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-gray-700">Output</h3>
+                <div>
+                    <label for="output_format" class="block text-sm font-medium text-gray-600">Format:</label>
+                    <select name="output_format" id="output_format" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                        <option>JPEG</option>
+                        <option>PNG</option>
+                        <option>WEBP</option>
+                        <option>PDF</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="quality" class="block text-sm font-medium text-gray-600">Quality (1–100):</label>
+                    <input type="number" name="quality" value="90" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-[#35a9e0] focus:border-[#35a9e0]">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="border-t pt-6">
+            <button type="submit" class="w-full p-4 font-semibold text-white bg-gradient-to-r from-orange-500 to-blue-600 rounded-lg hover:from-orange-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-500 transform hover:-translate-y-1 transition-all shadow-lg">
+                Process & Download
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const fileInput = document.getElementById("fileInput");
+      const fileName = document.getElementById("file-name");
+      const watermarkInput = document.getElementById("watermarkInput");
+      const watermarkName = document.getElementById("watermark-name");
+    
+      if (fileInput) {
+        fileInput.addEventListener("change", () => {
+          fileName.textContent = fileInput.files.length
+            ? `${fileInput.files.length} file(s) selected`
+            : "No file chosen";
+        });
+      }
+    
+      if (watermarkInput) {
+        watermarkInput.addEventListener("change", () => {
+          watermarkName.textContent = watermarkInput.files.length
+            ? watermarkInput.files[0].name
+            : "No file chosen";
+        });
+      }
+    });
+</script>
+{% endblock %}

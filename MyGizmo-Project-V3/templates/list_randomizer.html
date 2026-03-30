@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}List Randomizer - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+    
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">
+        List Randomizer
+    </h1>
+
+    <div class="mb-6">
+        <label for="list-input" class="block text-sm font-medium text-gray-700 mb-2">
+            Paste or type your list here (one item per line):
+        </label>
+        <textarea 
+            id="list-input" 
+            placeholder="Item 1
+Item 2
+Item 3
+..."
+            rows="10"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#35a9e0] focus:border-[#35a9e0] outline-none transition-shadow text-gray-800"
+        ></textarea>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-gray-50 p-4 rounded-lg text-center shadow-sm">
+            <p class="text-sm font-medium text-gray-500">Total Count</p>
+            <p id="total-count" class="text-2xl font-bold text-[#2a4a87] mt-1">0</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg text-center shadow-sm">
+            <p class="text-sm font-medium text-gray-500">Unique Count</p>
+            <p id="unique-count" class="text-2xl font-bold text-[#2a4a87] mt-1">0</p>
+        </div>
+        <div class="bg-gray-50 p-4 rounded-lg text-center shadow-sm">
+            <p class="text-sm font-medium text-gray-500">Duplicate Count</p>
+            <p id="duplicate-count" class="text-2xl font-bold text-[#2a4a87] mt-1">0</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div>
+            <label for="list-delimiter" class="block text-sm font-medium text-gray-700 mb-2">List Delimiter</label>
+            <select id="list-delimiter" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#35a9e0] focus:border-[#35a9e0] outline-none">
+                <option value="\n">New Line</option>
+                <option value=" ">Space</option>
+                <option value=",">Comma</option>
+                <option value=";">Semicolon</option>
+            </select>
+        </div>
+        <div>
+            <label for="num-selections" class="block text-sm font-medium text-gray-700 mb-2">Number of Selections</label>
+            <input 
+                type="number" 
+                id="num-selections" 
+                value="1" 
+                min="1"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#35a9e0] focus:border-[#35a9e0] outline-none"
+            >
+            <p class="text-xs text-gray-500 mt-1">Enter 0 to return all items.</p>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div class="flex flex-wrap gap-3">
+            <button id="remove-duplicates-btn" class="px-4 py-2 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                Remove Duplicates
+            </button>
+            <button id="reset-btn" class="px-4 py-2 bg-red-100 text-red-700 font-medium rounded-lg hover:bg-red-200 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2">
+                Reset
+            </button>
+        </div>
+        <button id="randomize-btn" class="w-full p-4 font-semibold text-white bg-gradient-to-r from-orange-500 to-blue-600 rounded-lg hover:from-orange-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-500 transform hover:-translate-y-1 transition-all shadow-lg">
+            Randomize List
+        </button>
+    </div>
+
+    <div>
+        <label for="results-output" class="block text-sm font-medium text-gray-700 mb-2">Results</label>
+        <textarea 
+            id="results-output" 
+            rows="8" 
+            readonly 
+            class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none"
+        >Results will appear here...</textarea>
+    </div>
+</div>
+
+<script>
+    // Get all the elements
+    const listInput = document.getElementById('list-input');
+    const totalCountSpan = document.getElementById('total-count');
+    const uniqueCountSpan = document.getElementById('unique-count');
+    const duplicateCountSpan = document.getElementById('duplicate-count');
+    const listDelimiterSelect = document.getElementById('list-delimiter');
+    const numSelectionsInput = document.getElementById('num-selections');
+    const removeDuplicatesBtn = document.getElementById('remove-duplicates-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const randomizeBtn = document.getElementById('randomize-btn');
+    const resultsOutput = document.getElementById('results-output');
+
+    // --- Helper function to get items from the input ---
+    function getItems() {
+        const delimiter = listDelimiterSelect.value;
+        const text = listInput.value.trim();
+        
+        if (!text) return [];
+
+        let items;
+        if (delimiter === '\\n') {
+            items = text.split('\n'); // Split by new line
+        } else {
+            items = text.split(delimiter); // Split by other delimiter
+        }
+        
+        // Clean up items: trim whitespace and remove empty strings
+        return items.map(item => item.trim()).filter(item => item.length > 0);
+    }
+
+    // --- Helper function to update the count boxes ---
+    function updateCounts() {
+        const items = getItems();
+        const total = items.length;
+        const unique = new Set(items).size;
+        
+        totalCountSpan.textContent = total;
+        uniqueCountSpan.textContent = unique;
+        duplicateCountSpan.textContent = total - unique;
+
+        // Also update the max value for number of selections
+        numSelectionsInput.max = total;
+    }
+
+    // --- Event Listeners ---
+
+    // 1. Update counts whenever input changes
+    listInput.addEventListener('input', updateCounts);
+    listDelimiterSelect.addEventListener('change', updateCounts);
+
+    // 2. Reset Button
+    resetBtn.addEventListener('click', () => {
+        listInput.value = '';
+        resultsOutput.value = 'Results will appear here...';
+        numSelectionsInput.value = '1';
+        listDelimiterSelect.value = '\\n'; // Reset delimiter to default
+        updateCounts(); // Reset counts
+    });
+
+    // 3. Remove Duplicates Button
+    removeDuplicatesBtn.addEventListener('click', () => {
+        const items = getItems();
+        const uniqueItems = Array.from(new Set(items));
+        
+        // Re-join the items using the selected delimiter (or newline if it was space)
+        const delimiter = listDelimiterSelect.value === ' ' ? '\n' : listDelimiterSelect.value.replace('\\n', '\n');
+        listInput.value = uniqueItems.join(delimiter);
+        
+        updateCounts(); // Update counts
+        resultsOutput.value = 'Duplicates removed. Your list has been updated.';
+    });
+
+    // 4. Randomize Button (The Main Logic)
+    randomizeBtn.addEventListener('click', () => {
+        let items = getItems();
+        if (items.length === 0) {
+            resultsOutput.value = 'Error: No items in the list to randomize.';
+            return;
+        }
+
+        let num = parseInt(numSelectionsInput.value, 10);
+        
+        // 0 means "all items"
+        if (num === 0) {
+            num = items.length;
+        }
+
+        if (num < 0 || num > items.length) {
+            resultsOutput.value = `Error: Number of selections must be between 0 and ${items.length}.`;
+            return;
+        }
+
+        // Shuffle the array (Fisher-Yates algorithm)
+        for (let i = items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [items[i], items[j]] = [items[j], items[i]]; // Swap elements
+        }
+
+        // Get the selected number of items
+        const selectedItems = items.slice(0, num);
+        
+        // Display the results
+        resultsOutput.value = selectedItems.join('\n');
+    });
+
+    // Initialize counts on page load
+    updateCounts();
+</script>
+{% endblock %}

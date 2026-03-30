@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            The MyGizmo Blog
+        </h1>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+            Tips, tutorials, and updates on our tools to help you work smarter.
+        </p>
+        
+        {% if current_user.is_authenticated %}
+        <div class="mt-6">
+            <a href="{{ url_for('create_post') }}" class="bg-teal-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-teal-600">
+                + Create New Post
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="space-y-8">
+        {% if posts %}
+            {% for post in posts %}
+                <article class="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">
+                        <a href="{{ url_for('post', slug=post.slug) }}" class="hover:text-teal-600">
+                            {{ post.title }}
+                        </a>
+                    </h2>
+                    <div class="text-sm text-gray-500 mb-3">
+                        <span>By {{ post.author.username }}</span> |
+                        <span>Posted on {{ post.date_posted.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    <p class="text-gray-600 mb-4">
+                        {{ post.excerpt }}
+                    </p>
+                    <a href="{{ url_for('post', slug=post.slug) }}" class="font-medium text-teal-600 hover:underline">
+                        Read More &rarr;
+                    </a>
+                </article>
+            {% endfor %}
+        {% else %}
+            <div class="bg-white p-12 rounded-2xl shadow-lg border border-gray-100 text-center">
+                <p class="text-gray-600 text-lg">No blog posts found. Check back soon!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
