@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}JSON Formatter & Validator - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+    
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">
+        JSON Formatter & Validator
+    </h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div>
+            <label for="json-input" class="block text-sm font-medium text-gray-700 mb-2">Input JSON:</label>
+            <textarea 
+                id="json-input" 
+                placeholder='{"name": "MyGizmo", "type": "toolkit"}'
+                rows="15"
+                class="w-full p-3 font-mono text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-shadow text-gray-800"
+            ></textarea>
+        </div>
+        <div>
+            <label for="json-output" class="block text-sm font-medium text-gray-700 mb-2">Output JSON:</label>
+            <textarea 
+                id="json-output" 
+                readonly 
+                rows="15"
+                class="w-full p-3 font-mono text-sm border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none"
+            >Result will appear here...</textarea>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-4 mb-6">
+        <button id="btn-format" class="px-6 py-3 font-semibold text-white bg-teal-500 rounded-lg hover:bg-teal-600 transition-all shadow">
+            Format / Beautify
+        </button>
+        <button id="btn-minify" class="px-6 py-3 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition-all shadow">
+            Minify
+        </button>
+        <button id="btn-validate" class="px-6 py-3 font-semibold text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 transition-all shadow">
+            Validate Only
+        </button>
+    </div>
+
+    <div id="validation-msg" class="hidden w-full p-4 mb-6 rounded-lg text-center font-medium"></div>
+
+    <div class="grid grid-cols-2 gap-4">
+        <button id="btn-copy" class="w-full p-3 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition-colors">Copy Output</button>
+        <button id="btn-clear" class="w-full p-3 bg-red-100 text-red-700 font-medium rounded-lg hover:bg-red-200 transition-colors">Clear All</button>
+    </div>
+</div>
+
+<script>
+    const jsonInput = document.getElementById('json-input');
+    const jsonOutput = document.getElementById('json-output');
+    const btnFormat = document.getElementById('btn-format');
+    const btnMinify = document.getElementById('btn-minify');
+    const btnValidate = document.getElementById('btn-validate');
+    const btnCopy = document.getElementById('btn-copy');
+    const btnClear = document.getElementById('btn-clear');
+    const validationMsg = document.getElementById('validation-msg');
+
+    function showMessage(msg, isSuccess) {
+        validationMsg.textContent = msg;
+        validationMsg.classList.remove('hidden', 'bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+        if (isSuccess) {
+            validationMsg.classList.add('bg-green-100', 'text-green-800');
+        } else {
+            validationMsg.classList.add('bg-red-100', 'text-red-800');
+        }
+    }
+
+    function processJSON(action) {
+        const raw = jsonInput.value.trim();
+        if (!raw) {
+            showMessage('Please enter some JSON to process.', false);
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(raw);
+            
+            if (action === 'format') {
+                jsonOutput.value = JSON.stringify(parsed, null, 4);
+                showMessage('JSON is valid and formatted successfully!', true);
+            } else if (action === 'minify') {
+                jsonOutput.value = JSON.stringify(parsed);
+                showMessage('JSON is valid and minified successfully!', true);
+            } else if (action === 'validate') {
+                showMessage('Valid JSON!', true);
+            }
+        } catch (error) {
+            showMessage('Invalid JSON: ' + error.message, false);
+            if (action !== 'validate') {
+                jsonOutput.value = 'Error: ' + error.message;
+            }
+        }
+    }
+
+    btnFormat.addEventListener('click', () => processJSON('format'));
+    btnMinify.addEventListener('click', () => processJSON('minify'));
+    btnValidate.addEventListener('click', () => processJSON('validate'));
+
+    btnCopy.addEventListener('click', () => {
+        if (!jsonOutput.value || jsonOutput.value.startsWith('Result') || jsonOutput.value.startsWith('Error')) return;
+        jsonOutput.select();
+        navigator.clipboard.writeText(jsonOutput.value);
+        
+        const originalText = btnCopy.textContent;
+        btnCopy.textContent = 'Copied!';
+        setTimeout(() => {
+            btnCopy.textContent = originalText;
+        }, 1500);
+    });
+
+    btnClear.addEventListener('click', () => {
+        jsonInput.value = '';
+        jsonOutput.value = 'Result will appear here...';
+        validationMsg.classList.add('hidden');
+    });
+</script>
+{% endblock %}

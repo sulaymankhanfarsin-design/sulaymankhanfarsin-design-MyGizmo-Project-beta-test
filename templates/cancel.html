@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Subscription Cancelled - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg text-center">
+    
+    <svg class="w-20 h-20 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">
+        Payment Cancelled
+    </h1>
+    
+    <p class="text-gray-600 mb-8 text-lg">
+        Your subscription process was cancelled. You can return to the homepage or try again whenever you're ready.
+    </p>
+
+    <a href="{{ url_for('home') }}" class="bg-gray-200 text-gray-800 px-8 py-3 rounded-md text-lg font-semibold hover:bg-gray-300 transition duration-300">
+        Return to Home
+    </a>
+</div>
+{% endblock %}

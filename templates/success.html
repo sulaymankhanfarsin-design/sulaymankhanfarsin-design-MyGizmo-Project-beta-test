@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Subscription Successful - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg text-center">
+    
+    <svg class="w-20 h-20 text-green-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">
+        Welcome to Pro!
+    </h1>
+    
+    <p class="text-gray-600 mb-8 text-lg">
+        Your subscription is now active. You have unlocked all premium tools and features.
+    </p>
+
+    <a href="{{ url_for('tools') }}" class="bg-teal-500 text-white px-8 py-3 rounded-md text-lg font-semibold hover:bg-teal-600 transition duration-300">
+        Go to My Tools
+    </a>
+</div>
+{% endblock %}
