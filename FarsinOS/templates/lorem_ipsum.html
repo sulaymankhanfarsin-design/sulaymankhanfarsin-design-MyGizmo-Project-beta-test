@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Lorem Ipsum Generator - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+    
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">
+        Lorem Ipsum Generator
+    </h1>
+
+    <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <div class="flex-grow">
+            <label for="num-paragraphs" class="block text-sm font-medium text-gray-700 mb-2">Number of Paragraphs:</label>
+            <input 
+                type="number" 
+                id="num-paragraphs" 
+                value="3" 
+                min="1"
+                max="50"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#35a9e0] focus:border-[#35a9e0] outline-none"
+            >
+        </div>
+        <div class="flex-shrink-0 md:self-end">
+            <button id="btn-generate" class="w-full p-3 font-semibold text-white bg-gradient-to-r from-orange-500 to-blue-600 rounded-lg hover:from-orange-600 hover:to-blue-800 transition-all shadow-lg">
+                Generate Text
+            </button>
+        </div>
+    </div>
+
+    <div>
+        <label for="results-output" class="block text-sm font-medium text-gray-700 mb-2">Generated Text:</label>
+        <textarea 
+            id="results-output" 
+            rows="15" 
+            readonly 
+            class="w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-800 focus:outline-none"
+        >Your text will appear here...</textarea>
+        <button id="btn-copy" class="w-full mt-4 p-3 bg-gray-200 text-gray-800 font-medium rounded-lg hover:bg-gray-300 transition-colors">
+            Copy to Clipboard
+        </button>
+    </div>
+</div>
+
+<script>
+    const btnGenerate = document.getElementById('btn-generate');
+    const btnCopy = document.getElementById('btn-copy');
+    const numInput = document.getElementById('num-paragraphs');
+    const outputArea = document.getElementById('results-output');
+
+    // A standard Lorem Ipsum paragraph
+    const LOREM_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+    function generateText() {
+        let num = parseInt(numInput.value, 10);
+        if (isNaN(num) || num < 1) num = 1;
+        if (num > 50) num = 50;
+        
+        let result = [];
+        for (let i = 0; i < num; i++) {
+            result.push(LOREM_TEXT);
+        }
+        
+        outputArea.value = result.join('\n\n');
+    }
+
+    btnGenerate.addEventListener('click', generateText);
+    
+    btnCopy.addEventListener('click', () => {
+        navigator.clipboard.writeText(outputArea.value);
+    });
+
+    // Generate on page load
+    generateText();
+</script>
+{% endblock %}

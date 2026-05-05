@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}URL Slug Generator - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+    
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">
+        URL Slug Generator
+    </h1>
+
+    <div class="mb-6">
+        <label for="text-input" class="block text-sm font-medium text-gray-700 mb-2">
+            Article Title, Blog Post Title etc.
+        </label>
+        <input 
+            type="text" 
+            id="text-input" 
+            placeholder="Enter your text here..."
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#35a9e0] focus:border-[#35a9e0] outline-none transition-shadow"
+        >
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+        
+        <fieldset class ="border border-gray-200 p-4 rounded-lg">
+            <legend class="text-lg font-semibold text-gray-700 px-2">Separator</legend>
+            <div class="space-y-3 mt-2">
+                <div class="flex items-center space-x-2">
+                    <input type="radio" id="sep-dash" name="separator" value="-" checked 
+                           class="w-4 h-4 text-[#35a9e0] border-gray-300 focus:ring-[#35a9e0]">
+                    <label for="sep-dash" class="text-gray-700">Dash (-)</label>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="radio" id="sep-underscore" name="separator" value="_"
+                           class="w-4 h-4 text-[#35a9e0] border-gray-300 focus:ring-[#35a9e0]">
+                    <label for="sep-underscore" class="text-gray-700">Underscore (_)</label>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="border border-gray-200 p-4 rounded-lg">
+            <legend class="text-lg font-semibold text-gray-700 px-2">Options</legend>
+            <div class="space-y-3 mt-2">
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="check-lowercase" checked
+                           class="w-4 h-4 text-[#35a9e0] border-gray-300 rounded focus:ring-[#35a9e0]">
+                    <label for="check-lowercase" class="text-gray-700">Lowercase</label>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="check-special-chars" checked
+                           class="w-4 h-4 text-[#35a9e0] border-gray-300 rounded focus:ring-[#35a9e0]">
+                    <label for="check-special-chars" class="text-gray-700">Remove Special Characters</label>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="check-remove-numbers"
+                           class="w-4 h-4 text-[#35a9e0] border-gray-300 rounded focus:ring-[#35a9e0]">
+                    <label for="check-remove-numbers" class="text-gray-700">Remove Numbers</label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+    <div>
+        <label for="slug-output" class="block text-sm font-medium text-gray-700 mb-2">
+            Slug will be shown here automatically...
+        </label>
+        <div class="flex space-x-2">
+            <input 
+                type="text" 
+                id="slug-output" 
+                readonly 
+                class="flex-grow w-full p-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 focus:outline-none"
+            >
+            <button 
+                id="copy-button"
+                class="w-full p-1 font-semibold text-white bg-gradient-to-r from-orange-500 to-blue-600 rounded-lg hover:from-orange-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-500 transform hover:-translate-y-1 transition-all shadow-lg"
+            >
+                Copy
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get references to all our HTML elements
+    const textInput = document.getElementById('text-input');
+    const slugOutput = document.getElementById('slug-output');
+    const copyButton = document.getElementById('copy-button');
+
+    // --- This is the main function ---
+    async function generateSlug() {
+        // 1. Get all the current values from the form
+        const text = textInput.value;
+        const separator = document.querySelector('input[name="separator"]:checked').value;
+        const removeNumbers = document.getElementById('check-remove-numbers').checked;
+        const lowercase = document.getElementById('check-lowercase').checked;
+        const removeSpecial = document.getElementById('check-special-chars').checked; // This is handled by slugify, but good to have
+
+        // 2. Send this data to our Python (Flask) back-end
+        const response = await fetch("{{ url_for('generate_slug') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                'text': text,
+                'separator': separator,
+                'remove_numbers': removeNumbers,
+                'lowercase': lowercase
+            }),
+        });
+
+        // 3. Get the JSON response back from Python
+        const data = await response.json();
+
+        // 4. Update the output box with the slug
+        slugOutput.value = data.slug;
+    }
+
+    // --- Event Listeners ---
+    textInput.addEventListener('input', generateSlug);
+    document.querySelectorAll('input[name="separator"]').forEach(radio => {
+        radio.addEventListener('change', generateSlug);
+    });
+    document.getElementById('check-remove-numbers').addEventListener('change', generateSlug);
+    document.getElementById('check-lowercase').addEventListener('change', generateSlug);
+    document.getElementById('check-special-chars').addEventListener('change', generateSlug);
+
+    // Add functionality to the "Copy" button
+    copyButton.addEventListener('click', () => {
+        if (!slugOutput.value) return; // Don't copy if empty
+        slugOutput.select();
+        navigator.clipboard.writeText(slugOutput.value);
+        
+        copyButton.textContent = 'Copied!';
+        setTimeout(() => {
+            copyButton.textContent = 'Copy';
+        }, 1500);
+    });
+</script>
+
+{% endblock %}

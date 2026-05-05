@@ -1,0 +1,336 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - My Gizmo{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-10">
+    
+    <div class="bg-white border border-gray-100 p-8 rounded-2xl shadow-xl">
+        <h1 class="text-4xl font-bold text-gray-900 mb-3">
+            Welcome back, <span class="text-gradient">{{ current_user.username }}</span>!
+        </h1>
+        <p class="text-lg text-gray-600 leading-relaxed">
+            Manage your account, view your subscription, and quickly access all your favorite tools from here.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        <div class="lg:col-span-2 space-y-10">
+            
+            <div class="bg-white border border-gray-100 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-6">Subscription Status</h2>
+                
+                {% if current_user.subscription_status == 'active' %}
+                    <div class="bg-teal-50 border-l-4 border-teal-500 p-6 rounded-lg shadow-sm">
+                        <p class="text-2xl font-bold text-teal-700 mb-2">Pro Plan</p>
+                        <p class="text-gray-700 leading-relaxed">Your subscription is active. You have unlimited access to all premium tools and features.</p>
+                        <button id="manage-subscription-button" class="mt-4 text-base font-medium text-teal-600 hover:underline transition-colors">
+                            Manage Subscription & Billing &rarr;
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 rounded-lg shadow-sm">
+                        <p class="text-2xl font-bold text-indigo-700 mb-2">Free Plan</p>
+                        <p class="text-gray-700 leading-relaxed">You are currently on the Free plan. Upgrade to unlock all premium features and unlimited conversions.</p>
+                        <a href="{{ url_for('home') }}#pricing" class="mt-4 inline-block btn-primary px-5 py-2.5 rounded-lg text-sm font-semibold text-white shadow-md">
+                            Upgrade to Pro
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="bg-white border border-gray-100 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-6">API Access</h2>
+                
+                <div class="space-y-6">
+                    
+                    {% if current_user.subscription_status != 'active' %}
+                    <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-lg shadow-sm">
+                        <p class="text-gray-700 leading-relaxed">
+                            You currently have access to the API as part of our free launch period.
+                            <a href="{{ url_for('home') }}#pricing" class="font-semibold text-indigo-700 hover:underline">Support the project by upgrading to Pro!</a>
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Your API Keys</h3>
+                        {% if api_keys %}
+                            <ul class="space-y-3">
+                                {% for key in api_keys %}
+                                <li class="p-4 bg-gray-50 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                                    <div class="flex-grow">
+                                        <p class="font-semibold text-gray-800">{{ key.name }}</p>
+                                        <code class="text-sm text-indigo-600 bg-indigo-50 p-1 rounded font-mono">{{ key.key }}</code>
+                                        <p class="text-xs text-gray-500 mt-1">Created: {{ key.created_at.strftime('%Y-%m-%d') }}</p>
+                                    </div>
+                                    <form action="{{ url_for('delete_api_key', key_id=key.id) }}" method="POST" class="flex-shrink-0">
+                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this key? This action is permanent.');" class="text-sm text-red-600 hover:text-red-800 font-medium">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-gray-500">You have not generated any API keys yet.</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="border-t border-gray-200 pt-4">
+                        <form action="{{ url_for('create_api_key') }}" method="POST" class="flex items-center gap-3">
+                            <input type="text" name="key_name" placeholder="New key name (e.g., My App)" class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500" required>
+                            <button type="submit" class="btn-secondary px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm">
+                                Generate Key
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-4 space-y-4">
+                         <h3 class="text-lg font-semibold text-gray-800 mb-2">How to Use the API</h3>
+                         <p class="text-sm text-gray-600 mb-4">Use the <code class="text-indigo-600 bg-indigo-50 p-1 rounded">X-API-Key</code> header to authenticate all requests. Select a tool below to see the code example:</p>
+                         
+                         <div class="flex flex-wrap border-b border-gray-200 -mb-px">
+                            <button class="api-tab-btn px-4 py-2 text-sm font-medium border-b-2 transition-all hover:text-teal-600 hover:border-teal-500 text-teal-600 border-teal-500" data-tab-target="tab-slug">Slug Generator</button>
+                            <button class="api-tab-btn px-4 py-2 text-sm font-medium border-b-2 transition-all hover:text-teal-600 hover:border-teal-500 text-gray-600 border-transparent" data-tab-target="tab-qr">QR Generator</button>
+                            <button class="api-tab-btn px-4 py-2 text-sm font-medium border-b-2 transition-all hover:text-teal-600 hover:border-teal-500 text-gray-600 border-transparent" data-tab-target="tab-bg-remover">BG Remover</button>
+                            <button class="api-tab-btn px-4 py-2 text-sm font-medium border-b-2 transition-all hover:text-teal-600 hover:border-teal-500 text-gray-600 border-transparent" data-tab-target="tab-randomizer">List Randomizer</button>
+                            <button class="api-tab-btn px-4 py-2 text-sm font-medium border-b-2 transition-all hover:text-teal-600 hover:border-teal-500 text-gray-600 border-transparent" data-tab-target="tab-file-converters">File Converters</button>
+                            <button class="api-tab-btn px-4 py-2 text-sm font-medium border-b-2 transition-all hover:text-teal-600 hover:border-teal-500 text-gray-600 border-transparent" data-tab-target="tab-image-studio">Image Studio</button>
+                         </div>
+
+                         <div>
+                            <div id="tab-slug" class="api-tab-content">
+                                <p class="text-sm text-gray-600 font-medium">1. Slug Generator (POST):</p>
+                                <pre class="bg-gray-800 text-white p-3 rounded-lg text-xs overflow-x-auto mt-2">
+curl -X POST "{{ url_for('api_slugify', _external=True) }}" \
+-H "Content-Type: application/json" \
+-H "X-API-Key: YOUR_API_KEY_HERE" \
+-d '{
+    "text": "This is my Example Text!",
+    "separator": "_",
+    "remove_numbers": true
+}'</pre>
+                            </div>
+                            
+                            <div id="tab-qr" class="api-tab-content hidden">
+                                <p class="text-sm text-gray-600 font-medium">2. QR Code Generator (POST):</p>
+                                <pre class="bg-gray-800 text-white p-3 rounded-lg text-xs overflow-x-auto mt-2">
+curl -X POST "{{ url_for('api_qr_generator', _external=True) }}" \
+-H "X-API-Key: YOUR_API_KEY_HERE" \
+-F "text=https://mygizmo.com" \
+-F "fill_color=#0000FF" \
+-F "back_color=#FFFFFF" \
+-F "logo_image=@/path/to/your/logo.png" \
+--output my_custom_qr.png</pre>
+                            </div>
+
+                            <div id="tab-bg-remover" class="api-tab-content hidden">
+                                <p class="text-sm text-gray-600 font-medium">3. AI Background Remover (POST):</p>
+                                <pre class="bg-gray-800 text-white p-3 rounded-lg text-xs overflow-x-auto mt-2">
+curl -X POST "{{ url_for('api_bg_remover', _external=True) }}" \
+-H "X-API-Key: YOUR_API_KEY_HERE" \
+-F "image=@/path/to/your/image.jpg" \
+--output removed_bg.png</pre>
+                            </div>
+
+                            <div id="tab-randomizer" class="api-tab-content hidden">
+                                <p class="text-sm text-gray-600 font-medium">4. List Randomizer (POST):</p>
+                                <pre class="bg-gray-800 text-white p-3 rounded-lg text-xs overflow-x-auto mt-2">
+curl -X POST "{{ url_for('api_list_randomizer', _external=True) }}" \
+-H "Content-Type: application/json" \
+-H "X-API-Key: YOUR_API_KEY_HERE" \
+-d '{
+    "items": ["Apple", "Banana", "Orange", "Grape"],
+    "num_selections": 2
+}'</pre>
+                            </div>
+
+                            <div id="tab-file-converters" class="api-tab-content hidden">
+                                <p class="text-sm text-gray-600 font-medium">5. JPG to PDF Converter (POST):</p>
+                                <pre class="bg-gray-800 text-white p-3 rounded-lg text-xs overflow-x-auto mt-2">
+curl -X POST "{{ url_for('api_jpg_to_pdf', _external=True) }}" \
+-H "X-API-Key: YOUR_API_KEY_HERE" \
+-F "images=@/path/to/image1.jpg" \
+-F "images=@/path/to/image2.png" \
+--output converted.pdf</pre>
+                                
+                                <p class="text-sm text-gray-600 font-medium mt-4">6. PDF to JPG Converter (POST):</p>
+                                <pre class="bg-gray-800 text-white p-3 rounded-lg text-xs overflow-x-auto mt-2">
+curl -X POST "{{ url_for('api_pdf_to_jpg', _external=True) }}" \
+-H "X-API-Key: YOUR_API_KEY_HERE" \
+-F "file=@/path/to/document.pdf" \
+--output converted_images.zip</pre>
+                            </div>
+
+                            <div id="tab-image-studio" class="api-tab-content hidden">
+                                <p class="text-sm text-gray-600 font-medium">7. Image Studio (POST):</p>
+                                <pre class="bg-gray-800 text-white p-3 rounded-lg text-xs overflow-x-auto mt-2">
+curl -X POST "{{ url_for('api_image_studio', _external=True) }}" \
+-H "X-API-Key: YOUR_API_KEY_HERE" \
+-F "images=@/path/to/image1.jpg" \
+-F "width=800" \
+-F "rotate=90" \
+-F "flip=horizontal" \
+-F "img_filter=grayscale" \
+-F "watermark_text=© MyGizmo" \
+-F "output_format=PNG" \
+--output processed_images.zip</pre>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="bg-white border border-gray-100 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-6">Your Recent Files</h2>
+                
+                {% if files %}
+                    <ul class="space-y-4">
+                        {% for file in files %}
+                        <li class="p-5 bg-gray-50 rounded-lg flex justify-between items-center transition-all hover:shadow-md hover:bg-gray-100 border border-gray-100">
+                            <div class="flex items-center gap-x-4">
+                                {% if 'PDF' in file.file_type %}
+                                    <span class="text-red-500">
+                                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                    </span>
+                                {% elif 'Image' in file.file_type %}
+                                    <span class="text-blue-500">
+                                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                                    </span>
+                                {% elif 'AI' in file.file_type %}
+                                    <span class="text-purple-500">
+                                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L1.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" /></svg>
+                                    </span>
+                                {% else %}
+                                    <span class="text-gray-500">
+                                        <svg class="w-7 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                                    </span>
+                                {% endif %}
+                                
+                                <div>
+                                    <span class="font-semibold text-gray-800">{{ file.original_filename }}</span>
+                                    <p class="text-sm text-gray-500">
+                                        {{ file.file_type }} | {{ file.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('download_file', filename=file.saved_filename) }}" class="text-teal-600 font-medium hover:underline text-sm transition-colors">Download</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <div class="text-center py-10">
+                        <p class="text-gray-500 text-lg">You have no saved files yet.</p>
+                        <p class="text-gray-500 mt-2 text-md">Process a file from one of the tools, and it will appear here.</p>
+                    </div>
+                {% endif %}
+                
+            </div>
+            </div>
+        
+        <div class="lg:col-span-1 space-y-10">
+            
+            <div class="bg-white border border-gray-100 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-6">My Profile</h2>
+                <div class="space-y-3 text-gray-700">
+                    <p><strong>Username:</strong> {{ current_user.username }}</p>
+                    <p><strong>Email:</strong> {{ current_user.email }}</p>
+                </div>
+            </div>
+
+            <div class="bg-white border border-gray-100 p-8 rounded-2xl shadow-xl">
+                <h2 class="text-3xl font-semibold text-gray-900 mb-6">Quick Access</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
+                    
+                    <a href="{{ url_for('image_studio') }}" class="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl hover:shadow-md transition-all text-center group border border-gray-100" title="Image Studio">
+                        <svg class="h-10 w-10 mx-auto text-blue-600 transition-transform group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L1.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.25 12L15 14.25l-3.25-2.25L15 9.75l3.25 2.25zM12 15.75l2.25 3.25L16.5 15.75-2.25-3.25L12 15.75z" /></svg>
+                    </a>
+                    <a href="{{ url_for('file_converter') }}" class="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl hover:shadow-md transition-all text-center group border border-gray-100" title="File Converter">
+                        <svg class="h-10 w-10 mx-auto text-red-600 transition-transform group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                    </a>
+                    <a href="{{ url_for('ai_background_remover') }}" class="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl hover:shadow-md transition-all text-center group border border-gray-100" title="AI Background Remover">
+                        <svg class="h-10 w-10 mx-auto text-teal-600 transition-transform group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c.251-.04.507-.068.77-.087a21.048 21.048 0 0110.732 4.63c.31.299.5.742.5 1.218v4.318a2.25 2.25 0 01-1.659 2.193l-2.156.622a2.25 2.25 0 00-1.09 1.09l-.622 2.156a2.25 2.25 0 01-2.193 1.659H6.379a2.25 2.25 0 01-2.193-1.659l-.622-2.156a2.25 2.25 0 00-1.09-1.09l-2.156-.622a2.25 2.25 0 01-1.659-2.193V9.051c0-.476.19-.919.5-1.218a21.048 21.048 0 0110.732-4.63c.263-.019.519-.047.77-.087z" /></svg>
+                    </a>
+                    <a href="{{ url_for('qr_generator') }}" class="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl hover:shadow-md transition-all text-center group border border-gray-100" title="QR Generator">
+                        <svg class="h-10 w-10 mx-auto text-indigo-600 transition-transform group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 013.75 9.375v-4.5zM3.75 14.625c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 013.75 19.125v-4.5zM13.5 4.875c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0113.5 9.375v-4.5zM13.5 14.625c0-1.036.84-1.875 1.875-1.875h4.5c1.036 0 1.875.84 1.875 1.875v4.5c0 1.036-.84 1.875-1.875 1.875h-4.5A1.875 1.875 0 0113.5 19.125v-4.5z" /></svg>
+                    </a>
+                    <a href="{{ url_for('slug_generator') }}" class="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl hover:shadow-md transition-all text-center group border border-gray-100" title="Slug Generator">
+                        <svg class="h-10 w-10 mx-auto text-amber-600 transition-transform group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>
+                    </a>
+                    <a href="{{ url_for('list_randomizer') }}" class="p-4 bg-gray-50 hover:bg-gray-100 rounded-xl hover:shadow-md transition-all text-center group border border-gray-100" title="List Randomizer">
+                        <svg class="h-10 w-10 mx-auto text-green-600 transition-transform group-hover:scale-110" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" /></svg>
+                    </a>
+                    
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // ... (আপনার আগের Stripe manageButton কোড এখানে থাকবে) ...
+        const manageButton = document.getElementById("manage-subscription-button");
+        if (manageButton) {
+            manageButton.addEventListener("click", async () => {
+                manageButton.disabled = true;
+                manageButton.textContent = "Loading...";
+                try {
+                    const response = await fetch("{{ url_for('create_portal_session') }}", {
+                        method: "POST",
+                        headers: {'Content-Type': 'application/json'}
+                    });
+                    const session = await response.json();
+                    if (session.url) {
+                        window.location.href = session.url;
+                    } else if (session.error) {
+                        alert(session.error);
+                        manageButton.disabled = false;
+                        manageButton.textContent = "Manage Subscription & Billing →";
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Could not connect to subscription manager. Please try again later.");
+                    manageButton.disabled = false;
+                    manageButton.textContent = "Manage Subscription & Billing →";
+                }
+            });
+        }
+
+        // --- আপডেটেড API ট্যাব সিস্টেমের জন্য জাভাস্ক্রিপ্ট ---
+        const tabButtons = document.querySelectorAll(".api-tab-btn");
+        const tabContents = document.querySelectorAll(".api-tab-content");
+
+        tabButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                const targetId = button.dataset.tabTarget;
+                const targetContent = document.getElementById(targetId);
+
+                // সব বাটন নিষ্ক্রিয় করুন (ক্লাস পরিবর্তন করে)
+                tabButtons.forEach(btn => {
+                    btn.classList.remove("text-teal-600", "border-teal-500");
+                    btn.classList.add("text-gray-600", "border-transparent");
+                });
+                // এই বাটনটি সক্রিয় করুন (ক্লাস পরিবর্তন করে)
+                button.classList.add("text-teal-600", "border-teal-500");
+                button.classList.remove("text-gray-600", "border-transparent");
+
+                // সব কনটেন্ট লুকিয়ে ফেলুন
+                tabContents.forEach(content => {
+                    content.classList.add("hidden");
+                });
+                // টার্গেট কনটেন্ট দেখান
+                if (targetContent) {
+                    targetContent.classList.remove("hidden");
+                }
+            });
+        });
+        // --- ট্যাব সিস্টেমের জাভাস্ক্রিপ্ট শেষ ---
+    });
+</script>
+{% endblock %}
